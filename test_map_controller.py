@@ -8,9 +8,9 @@ class TestMapController(unittest.TestCase):
 
   def setUp(self):
     self.root  = Region("Root", 0)
-    self.next1 = Region("Next 1", 0)
-    self.next2 = Region("Next 2", 0)
-    self.end   = Region("End", 0)
+    self.next1 = Region("Next 1", 1)
+    self.next2 = Region("Next 2", 2)
+    self.end   = Region("End", 3)
     self.root .add_gate(Gate(self.next1, {Requisite({"Req 1"})}))
     self.root .add_gate(Gate(self.next2, {Requisite({"Req 2"})}))
     self.next1.add_gate(Gate(self.end,   {Requisite({"Req 3"})}))
@@ -56,5 +56,21 @@ class TestMapController(unittest.TestCase):
     self.assertEqual(route[0], self.root)
     self.assertEqual(route[1], self.next2)
     self.assertEqual(route[2], self.end)
+
+  def test_count_items(self):
+    self.assertEqual(self.mc.count_items(self.root), 0)
+    self.mc.gain_item("Req 1")
+    self.assertEqual(self.mc.count_items(self.root), 1)
+    self.mc.gain_item("Req 2")
+    self.assertEqual(self.mc.count_items(self.root), 3)
+    self.mc.gain_item("Req 3")
+    self.assertEqual(self.mc.count_items(self.root), 6)
+    self.mc.gain_item("Req 4")
+    self.assertEqual(self.mc.count_items(self.root), 6)
+    self.mc.lose_item("Req 1")
+    self.assertEqual(self.mc.count_items(self.root), 5)
+    self.assertEqual(self.mc.count_items(self.next1), 4)
+
+
 
 
