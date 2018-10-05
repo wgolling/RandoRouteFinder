@@ -1,7 +1,5 @@
 from queue import Queue
 
-# do I need to import map_objects?
-
 class MapController():
   '''
   A controller class to implement graph functions on the game map.
@@ -28,6 +26,10 @@ class MapController():
         self.recursive_gain_item(item, gate.other_side, visited_nodes)
 
   def gain_item(self, item):
+    '''
+    Has the effect of adding an item to the inventory.
+    Updates all the Gates and Regions in the graph.
+    '''
     self.recursive_gain_item(item, self.root, set())
 
 
@@ -51,6 +53,10 @@ class MapController():
         self.reset_accessibilities(gate.other_side, visited_nodes)
 
   def lose_item(self, item):
+    '''
+    Has the effect of removing an item from the inventory.
+    Updates all the Gates and Regions in the graph.
+    '''
     self.recursive_lose_item(item, self.root, set())
     self.is_completable = False
     self.root.is_accessible = True
@@ -60,6 +66,12 @@ class MapController():
   # Route finding
 
   def find_route(self, region):
+    '''
+    Returns a list representing a shortest path to the given region if it is accessible, 
+    and None otherwise.
+    '''
+    if not region.is_accessible:
+      return None
     todo = Queue()
     visited_nodes = set()
     parents = dict()
